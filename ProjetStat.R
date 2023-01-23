@@ -5,7 +5,7 @@ library(dplyr)
 
 
 
-setwd("P:/R/Projet Statistique")
+setwd("C:/Users/favre bonvin/Documents/ProjetStatistique32")
 
 cancer <- read.csv("DataCancer.csv")
 summary(cancer)
@@ -30,8 +30,8 @@ DROM <- list("971", "972", "973", "974", "976")
 cancer$dep <- cancer$departement_de_domicile
 cancer <- subset(cancer, select = -c(departement_de_domicile))
 
-cancer$region <- ifelse(cancer$dep %in% ARA, cancer$region <- "Auvergne-Rhônes-Alpes",
-ifelse(cancer$dep %in% BFC, cancer$region <- "Bourgogne-Franche-Comté",
+cancer$region <- ifelse(cancer$dep %in% ARA, cancer$region <- "Auvergne-Rh?nes-Alpes",
+ifelse(cancer$dep %in% BFC, cancer$region <- "Bourgogne-Franche-Comt?",
 ifelse(cancer$dep %in% Btg, cancer$region <- "Bretagne",
 ifelse(cancer$dep %in% CVL, cancer$region <- "Centre-Val de Loire",
 ifelse(cancer$dep %in% Crs, cancer$region <- "Corse",
@@ -42,7 +42,7 @@ ifelse(cancer$dep %in% IDF, cancer$region <- "Ile-de-France",
 ifelse(cancer$dep %in% Nmd, cancer$region <- "Normandie",
 ifelse(cancer$dep %in% NvlA, cancer$region <- "Nouvelle-Aquitaine",
 ifelse(cancer$dep %in% Octn, cancer$region <- "Occitanie",
-ifelse(cancer$dep%in% PACA, cancer$region <- "Provence-Alpes-Côtes d'Azur",
+ifelse(cancer$dep%in% PACA, cancer$region <- "Provence-Alpes-C?tes d'Azur",
 cancer$region <- "Pays de la Loire"
 )))))))))))))
 
@@ -61,7 +61,7 @@ deces_region$obesite <- obesite*10
 ?cor
 cor(deces_region$obesite, deces_region$mortalite)
 reglin <- lm(deces_region$obesite~deces_region$mortalite)
-plot(deces_region$obesite, deces_region$mortalite,xlab = "Obésité",ylab = "Mortalité")
+plot(deces_region$obesite, deces_region$mortalite,xlab = "Ob?sit?",ylab = "Mortalit?")
 deces_region_2 <- deces_region %>%  filter(!row_number() %in% c(12))
 cor(deces_region_2$obesite, deces_region_2$mortalite)
 ?subset
@@ -78,7 +78,7 @@ deces_regionF$Region <- as.factor(deces_regionF$Region)
 deces_regionF$Region1 <- nombre
 deces_regionH$Region1 <- nombre
 
-plot(nombre, deces_regionH$x, col = "red", xlab = "Numéro de la région", ylab = "Nombre de décès")
+plot(nombre, deces_regionH$x, col = "red", xlab = "Num?ro de la r?gion", ylab = "Nombre de d?c?s")
 par(new = "TRUE")
 plot(nombre, deces_regionF$x, col = "blue", xlab = "", ylab = "", axes = "FALSE")
 nombre = seq(12)
