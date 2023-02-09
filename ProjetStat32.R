@@ -4,8 +4,19 @@ rm(list=ls())
 
 #Installation des packages
 install.packages("dplyr")
-install.packages(Panda)
+install.packages("cartography")
+install.packages("maps")
+install.packages("mapdata")
+install.packages("Hmisc")
+install.packages("ggplot2")
+install.packages("rnaturalearth")
 library(dplyr)
+library(cartography)
+library(maps)
+library(mapdata)
+library(Hmisc)
+library(ggplot2)
+library(rnaturalearth)
 ###
 
 #Mise en place de work directory
@@ -55,5 +66,18 @@ deces_region <- subset(deces_region, select = -c(x, Region))
 
 plot1 <- cbind(correspondance, deces_region)
 
+plot1$popregion <- as.integer(plot1$popregion)
+plot1$obesite <- as.integer(plot1$obesite)
+
+plot1$taux_mortalite = plot1$deces/plot1$popregion*100000
+
 #Les données sont stockés et prêtes à être utilisé dans un plot
+
+plot(plot1$obesite, plot1$taux_mortalite, col='red', xlab = 'Obésité', ylab='Mortalité')
+
+reglin <- lm(plot1$obesite~plot1$taux_mortalite)
+
+abline(lm(plot1$taux_mortalite ~ plot1$obesite))
+
+cor(plot1$taux_mortalite, plot1$obesite)
 
