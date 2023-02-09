@@ -10,6 +10,11 @@ install.packages("mapdata")
 install.packages("Hmisc")
 install.packages("ggplot2")
 install.packages("rnaturalearth")
+install.packages("sp")
+install.packages("tidyverse")
+install.packages("stringr")
+install.packages("stringi")
+install.packages("mapproj")
 library(dplyr)
 library(cartography)
 library(maps)
@@ -17,6 +22,11 @@ library(mapdata)
 library(Hmisc)
 library(ggplot2)
 library(rnaturalearth)
+library(sp)
+library(tidyverse)
+library(stringr)
+library(stringi)
+library(mapproj)
 ###
 
 #Mise en place de work directory
@@ -81,3 +91,73 @@ abline(lm(plot1$taux_mortalite ~ plot1$obesite))
 
 cor(plot1$taux_mortalite, plot1$obesite)
 
+
+#Test de cartographie sur la France
+
+correspondance_dep_region <- read.csv2("departements-region.csv", sep=",")
+
+map <- map_data("france")
+
+map$departement <- map$region
+
+###Correction de l'ortographe pour que cela colle entre les df
+
+correspondance_dep_region[correspondance_dep_region == "Ardèche"] <- "Ardeche"
+correspondance_dep_region[correspondance_dep_region == "Ariège"] <- "Ariege"
+correspondance_dep_region[correspondance_dep_region == "Bouches-du-Rhône"] <- "Bouches-du-Rhone"
+correspondance_dep_region[correspondance_dep_region == "Corrèze"] <- "Correze"
+correspondance_dep_region[correspondance_dep_region == "Côte-d'Or"] <- "Cote-Dor"
+correspondance_dep_region[correspondance_dep_region == "Côtes-d'Armor"] <- "Cotes-Darmor"
+correspondance_dep_region[correspondance_dep_region == "Deux-Sèvres"] <- "Deux-Sevres"
+correspondance_dep_region[correspondance_dep_region == "Drôme"] <- "Drome"
+correspondance_dep_region[correspondance_dep_region == "Finistère"] <- "Finistere"
+correspondance_dep_region[correspondance_dep_region == "Haute-Saône"] <- "Haute-Saone"
+correspondance_dep_region[correspondance_dep_region == "Hautes-Pyrénées"] <- "Hautes-Pyrenees"
+correspondance_dep_region[correspondance_dep_region == "Hérault"] <- "Herault"
+correspondance_dep_region[correspondance_dep_region == "Isère"] <- "Isere"
+correspondance_dep_region[correspondance_dep_region == "Lozère"] <- "Lozere"
+correspondance_dep_region[correspondance_dep_region == "Nièvre"] <- "Nievre"
+correspondance_dep_region[correspondance_dep_region == "Puy-de-Dôme"] <- "Puy-de-Dome"
+correspondance_dep_region[correspondance_dep_region == "Pyrénées-Atlantiques"] <- "Pyrenees-Atlantiques"
+correspondance_dep_region[correspondance_dep_region == "Pyrénées-Orientales"] <- "Pyrenees-Orientales"
+correspondance_dep_region[correspondance_dep_region == "Rhône"] <- "Rhone"
+correspondance_dep_region[correspondance_dep_region == "Saône-et-Loire"] <- "Saone-et-Loire"
+correspondance_dep_region[correspondance_dep_region == "Val-d'Oise"] <- "Val-Doise"
+correspondance_dep_region[correspondance_dep_region == "Vendée"] <- "Vendee"
+
+###
+
+correspondance_dep_region$departement <- correspondance_dep_region$dep_name
+
+map <- merge(map, correspondance_dep_region, by="departement")
+
+map <- subset(map, select = -c(region, num_dep))
+
+#La table est prête pour la cartographie
+
+cartographie <- left_join(x = map, y = plot1, by = "region_name")
+
+plot1$region_name <- as.character(plot1$region)
+
+map_theme <- theme(title=element_text(),
+                   plot.title=element_text(margin=margin(20,20,20,20), size=18, hjust = 0.5),
+                   axis.text.x=element_blank(),
+                   axis.text.y=element_blank(),
+                   axis.ticks=element_blank(),
+                   axis.title.x=element_blank(),
+                   axis.title.y=element_blank(),
+                   panel.grid.major= element_blank(), 
+                   panel.background= element_blank()) 
+
+ggplot(cartographie, aes(long,lat, group = group, )) +
+  geom_polygon() +
+  coord_map() +
+  scale_fill_gradient(name = "") +
+  labs(x = "", 
+       y = "", 
+       title = "Lien obésité / décès par cancer du tube digestif", 
+       subtitle = "Données en annexes" ) +
+  map_theme
+
+map$depfactor <- as.factor(map$region)
+summary(map$depfactor)
