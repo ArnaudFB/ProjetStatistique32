@@ -45,9 +45,9 @@ cancerregion <- subset(cancerregion, select = -c(classe_d_age_de_10_ans))
 cancerdigestifregion <- subset(cancerdigestifregion, select = -c(classe_d_age_de_10_ans))
 
 #Mise en place de la correspondance par région
-region <- list("Île de France","Centre-Val de Loire","Bourgogne-Franche-Comté",
-               "Normandie","Hauts de France","Grand Est","Pays de la Loire",
-               "Bretagne","Nouvelle Aquitaine","Occitanie",
+region <- list("Île-de-France","Centre-Val de Loire","Bourgogne-Franche-Comté",
+               "Normandie","Hauts-de-France","Grand Est","Pays de la Loire",
+               "Bretagne","Nouvelle-Aquitaine","Occitanie",
                "Auvergne-Rhône-Alpes", "Provence-Alpes-Côte d'Azur")
 
 numregion <- list(11, 24, 27, 28, 32, 44, 52, 53, 75, 76, 84, 93)
@@ -135,9 +135,9 @@ map <- subset(map, select = -c(region, num_dep))
 
 #La table est prête pour la cartographie
 
-cartographie <- left_join(x = map, y = plot1, by = "region_name")
-
 plot1$region_name <- as.character(plot1$region)
+
+cartographie <- left_join(x = map, y = plot1, by = "region_name")
 
 map_theme <- theme(title=element_text(),
                    plot.title=element_text(margin=margin(20,20,20,20), size=18, hjust = 0.5),
@@ -149,15 +149,15 @@ map_theme <- theme(title=element_text(),
                    panel.grid.major= element_blank(), 
                    panel.background= element_blank()) 
 
-ggplot(cartographie, aes(long,lat, group = group, )) +
+ggplot(cartographie, aes(long,lat, group = region_name, fill = taux_mortalite, )) +
   geom_polygon() +
   coord_map() +
-  scale_fill_gradient(name = "") +
+  scale_fill_gradient(name = "Taux de mortalité") +
   labs(x = "", 
        y = "", 
        title = "Lien obésité / décès par cancer du tube digestif", 
        subtitle = "Données en annexes" ) +
   map_theme
 
-map$depfactor <- as.factor(map$region)
-summary(map$depfactor)
+map$regfactor <- as.factor(map$region_name)
+summary(map$regfactor)
