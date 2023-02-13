@@ -106,6 +106,7 @@ correspondance_dep_region[correspondance_dep_region == "Ardèche"] <- "Ardeche"
 correspondance_dep_region[correspondance_dep_region == "Ariège"] <- "Ariege"
 correspondance_dep_region[correspondance_dep_region == "Bouches-du-Rhône"] <- "Bouches-du-Rhone"
 correspondance_dep_region[correspondance_dep_region == "Corrèze"] <- "Correze"
+correspondance_dep_region[correspondance_dep_region == "Corse-du-Sud"] <- "Corse du Sud"
 correspondance_dep_region[correspondance_dep_region == "Côte-d'Or"] <- "Cote-Dor"
 correspondance_dep_region[correspondance_dep_region == "Côtes-d'Armor"] <- "Cotes-Darmor"
 correspondance_dep_region[correspondance_dep_region == "Deux-Sèvres"] <- "Deux-Sevres"
@@ -151,13 +152,22 @@ map_theme <- theme(title=element_text(),
 
 ggplot(cartographie, aes(long,lat, group = region_name, fill = taux_mortalite, )) +
   geom_polygon() +
+  geom_map(data=cartographie, map=cartographie,
+           aes(map_id=region_name, group=group,
+               fill=taux_mortalite)) +
+  geom_path(data = cartographie, aes(x = long, y = lat, group = group), 
+            color = "black", size = .2) +
   coord_map() +
-  scale_fill_gradient(name = "Taux de mortalité") +
+  scale_fill_gradient(high = "#132B43", low = "#56B1F7", name = "Taux de mortalité") +
   labs(x = "", 
        y = "", 
-       title = "Lien obésité / décès par cancer du tube digestif", 
-       subtitle = "Données en annexes" ) +
+       title = "Lien obésité / décès par cancer du tube digestif" ) +
   map_theme
 
-map$regfactor <- as.factor(map$region_name)
-summary(map$regfactor)
+map$depfactor <- as.factor(map$departement)
+summary(map$depfactor)
+
+?coord_map
+
+
+
